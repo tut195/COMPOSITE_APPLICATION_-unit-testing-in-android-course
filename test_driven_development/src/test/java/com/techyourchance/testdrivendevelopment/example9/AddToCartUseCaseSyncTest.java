@@ -1,30 +1,24 @@
 package com.techyourchance.testdrivendevelopment.example9;
 
+import static com.techyourchance.testdrivendevelopment.example9.networking.AddToCartHttpEndpointSync.EndpointResult.AUTH_ERROR;
+import static com.techyourchance.testdrivendevelopment.example9.networking.AddToCartHttpEndpointSync.EndpointResult.GENERAL_ERROR;
+import static com.techyourchance.testdrivendevelopment.example9.networking.AddToCartHttpEndpointSync.EndpointResult.SUCCESS;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.techyourchance.testdrivendevelopment.example9.AddToCartUseCaseSync.UseCaseResult;
 import com.techyourchance.testdrivendevelopment.example9.networking.AddToCartHttpEndpointSync;
 import com.techyourchance.testdrivendevelopment.example9.networking.CartItemScheme;
 import com.techyourchance.testdrivendevelopment.example9.networking.NetworkErrorException;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
-
-import static com.techyourchance.testdrivendevelopment.example9.networking.AddToCartHttpEndpointSync.EndpointResult.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.ArgumentCaptor.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddToCartUseCaseSyncTest {
@@ -58,6 +52,12 @@ public class AddToCartUseCaseSyncTest {
         verify(mAddToCartHttpEndpointSyncMock).addToCartSync(ac.capture());
         assertThat(ac.getValue().getOfferId(), is(OFFER_ID));
         assertThat(ac.getValue().getAmount(), is(AMOUNT));
+    }
+
+    @Test
+    public void AddToCard_Sync_correct(){
+
+
     }
 
     @Test

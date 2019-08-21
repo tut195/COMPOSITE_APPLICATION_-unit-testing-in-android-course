@@ -1,18 +1,17 @@
 package com.techyourchance.testdoublesfundamentals.example4;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import com.techyourchance.testdoublesfundamentals.example4.LoginUseCaseSync.UseCaseResult;
 import com.techyourchance.testdoublesfundamentals.example4.authtoken.AuthTokenCache;
 import com.techyourchance.testdoublesfundamentals.example4.eventbus.EventBusPoster;
 import com.techyourchance.testdoublesfundamentals.example4.eventbus.LoggedInEvent;
 import com.techyourchance.testdoublesfundamentals.example4.networking.LoginHttpEndpointSync;
 import com.techyourchance.testdoublesfundamentals.example4.networking.NetworkErrorException;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 public class LoginUseCaseSyncTest {
 
@@ -26,7 +25,18 @@ public class LoginUseCaseSyncTest {
 
     LoginUseCaseSync SUT;
 
-    @Before
+  /**
+   * Если регистрация пользователя успешна - authToken должен быть сохрянт
+   * Если нет - соответсвенно authToken не меняется
+   * Если логин успешный, то должен вызваться loginEventPosted!
+   * Если логин не успешен, - логин не постится
+   *
+   * @throws Exception
+   */
+
+
+
+  @Before
     public void setup() throws Exception {
         mLoginHttpEndpointSyncTd = new LoginHttpEndpointSyncTd();
         mAuthTokenCacheTd = new AuthTokenCacheTd();
@@ -41,13 +51,29 @@ public class LoginUseCaseSyncTest {
         assertThat(mLoginHttpEndpointSyncTd.mPassword, is(PASSWORD));
     }
 
-    @Test
+  /**
+   * В данном тесте просиходит следующая логика. Когда SUT принимает на вход правильные
+   * логин и пароль, происходит сохранение параметров. Соответвенно - создав глобальную переменную
+   * класса mAuthTokenCache - можем проверить взаимодействие с этим классом - по доступу к кешированной
+   * переменной
+   *
+   * @throws Exception
+   */
+  @Test
     public void loginSync_success_authTokenCached() throws Exception {
         SUT.loginSync(USERNAME, PASSWORD);
         assertThat(mAuthTokenCacheTd.getAuthToken(), is(AUTH_TOKEN));
     }
 
-    @Test
+  /**
+   * Соответвенно предидущего теста - внутри импленетации создаётся переменная mIsGeneralError
+   * и меняя эту переменную извне мы имеев возможнть менять поведение LoginHttpEndpointSyncTd, а
+   * через него соответвенно - будет запиисано в кеш или нет
+   *
+   * @throws Exception
+   */
+
+  @Test
     public void loginSync_generalError_authTokenNotCached() throws Exception {
         mLoginHttpEndpointSyncTd.mIsGeneralError = true;
         SUT.loginSync(USERNAME, PASSWORD);
@@ -131,6 +157,8 @@ public class LoginUseCaseSyncTest {
 
     // ---------------------------------------------------------------------------------------------
     // Helper classes
+    // Ненобходимо убедитс, что параметры, username и password переданные в конструктор соответсвуют!
+    // Потому в шаей имплементации этого класса
 
     private static class LoginHttpEndpointSyncTd implements LoginHttpEndpointSync {
         public String mUsername = "";

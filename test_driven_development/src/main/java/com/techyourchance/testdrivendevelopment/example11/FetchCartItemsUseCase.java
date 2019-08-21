@@ -3,7 +3,6 @@ package com.techyourchance.testdrivendevelopment.example11;
 import com.techyourchance.testdrivendevelopment.example11.cart.CartItem;
 import com.techyourchance.testdrivendevelopment.example11.networking.CartItemSchema;
 import com.techyourchance.testdrivendevelopment.example11.networking.GetCartItemsHttpEndpoint;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +16,13 @@ public class FetchCartItemsUseCase {
     private final List<Listener> mListeners = new ArrayList<>();
     private final GetCartItemsHttpEndpoint mGetCartItemsHttpEndpoint;
 
+    // Constructor
+
     public FetchCartItemsUseCase(GetCartItemsHttpEndpoint getCartItemsHttpEndpoint) {
         mGetCartItemsHttpEndpoint = getCartItemsHttpEndpoint;
     }
+
+    // Public
 
     public void fetchCartItemsAndNotify(int limit) {
         mGetCartItemsHttpEndpoint.getCartItems(limit, new GetCartItemsHttpEndpoint.Callback() {
@@ -40,6 +43,8 @@ public class FetchCartItemsUseCase {
             }
         });
     }
+
+    // Private helpers
 
     private void notifySucceeded(List<CartItemSchema> cartItems) {
         for (Listener listener : mListeners) {

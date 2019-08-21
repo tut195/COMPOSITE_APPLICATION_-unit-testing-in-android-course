@@ -46,7 +46,7 @@ public class QuestionsListControllerTest {
     public void setup() throws Exception {
         mUseCaseTd = new UseCaseTd();
         SUT = new QuestionsListController(mUseCaseTd, mScreensNavigator, mToastsHelper, mTimeProviderMock);
-        SUT.bindView(mQuestionsListViewMvc);
+        SUT.bindView(mQuestionsListViewMvc); // Не есть частью конструктора. Потому биндится позже!
     }
 
     @Test
@@ -195,6 +195,8 @@ public class QuestionsListControllerTest {
     // endregion helper methods --------------------------------------------------------------------
 
     // region helper classes -----------------------------------------------------------------------
+
+    // Создаём TesdDouble для UseCase
     private static class UseCaseTd extends FetchLastActiveQuestionsUseCase {
 
         public boolean mEmptyListOnFirstCall;

@@ -1,20 +1,5 @@
 package com.techyourchance.mockitofundamentals.example7;
 
-import com.techyourchance.mockitofundamentals.example7.authtoken.AuthTokenCache;
-import com.techyourchance.mockitofundamentals.example7.eventbus.EventBusPoster;
-import com.techyourchance.mockitofundamentals.example7.eventbus.LoggedInEvent;
-import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
-import com.techyourchance.mockitofundamentals.example7.networking.NetworkErrorException;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -25,6 +10,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import com.techyourchance.mockitofundamentals.example7.authtoken.AuthTokenCache;
+import com.techyourchance.mockitofundamentals.example7.eventbus.EventBusPoster;
+import com.techyourchance.mockitofundamentals.example7.eventbus.LoggedInEvent;
+import com.techyourchance.mockitofundamentals.example7.networking.LoginHttpEndpointSync;
+import com.techyourchance.mockitofundamentals.example7.networking.NetworkErrorException;
+import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 public class LoginUseCaseSyncTest {
 
@@ -44,9 +39,17 @@ public class LoginUseCaseSyncTest {
         mAuthTokenCacheMock = mock(AuthTokenCache.class);
         mEventBusPosterMock = mock(EventBusPoster.class);
         SUT = new LoginUseCaseSync(mLoginHttpEndpointSyncMock, mAuthTokenCacheMock, mEventBusPosterMock);
+        // Этот метод возвращает положительный ответ всегда!
         success();
     }
 
+
+    /**
+     * В этом тесте мы передаём в SUT логин и пароль и проверяем, что он соответвует переданному.
+     * К томуже имеем возможность протестировать, что метод loginSync был вызван 1 раз.
+     *
+     * @throws Exception
+     */
     @Test
     public void loginSync_success_usernameAndPasswordPassedToEndpoint() throws Exception {
         ArgumentCaptor<String> ac = ArgumentCaptor.forClass(String.class);
@@ -57,6 +60,13 @@ public class LoginUseCaseSyncTest {
         assertThat(captures.get(1), is(PASSWORD));
     }
 
+
+    /**
+     * Передаём значение login password - тогда в методе before - в методе success - всегда ставиться положительный ответ
+     * Соответвенно при передаче логин и пассвор - происходит сохранение в метод
+     *
+     * @throws Exception
+     */
     @Test
     public void loginSync_success_authTokenCached() throws Exception {
         ArgumentCaptor<String> ac = ArgumentCaptor.forClass(String.class);
@@ -154,12 +164,24 @@ public class LoginUseCaseSyncTest {
                 .when(mLoginHttpEndpointSyncMock).loginSync(any(String.class), any(String.class));
     }
 
+
+    /**
+     * Мокаем ответ когда обращаемся, mLoginHttpEndpointSyncMock - тогда этот метод интерфейса возвращает
+     *
+     *
+     * @throws NetworkErrorException
+     */
     private void success() throws NetworkErrorException {
         when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
                 .thenReturn(new LoginHttpEndpointSync.EndpointResult(LoginHttpEndpointSync.EndpointResultStatus.SUCCESS, AUTH_TOKEN));
     }
 
-    private void generalError() throws Exception {
+  /**
+   * Создали метод generalError - когда он вызывается, интерфейс возвращает ошибку
+   *
+   * @throws Exception
+   */
+  private void generalError() throws Exception {
         when(mLoginHttpEndpointSyncMock.loginSync(any(String.class), any(String.class)))
                 .thenReturn(new LoginHttpEndpointSync.EndpointResult(LoginHttpEndpointSync.EndpointResultStatus.GENERAL_ERROR, ""));
     }

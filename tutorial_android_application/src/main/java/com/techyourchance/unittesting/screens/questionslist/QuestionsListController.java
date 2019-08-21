@@ -8,9 +8,9 @@ import com.techyourchance.unittesting.screens.common.toastshelper.ToastsHelper;
 
 import java.util.List;
 
-public class QuestionsListController  implements
-        QuestionsListViewMvc.Listener,
-        FetchLastActiveQuestionsUseCase.Listener {
+// Данный класс имплементирует 2 интерфейса - а именно bp вью и из domainLayer - useCases
+
+public class QuestionsListController  implements QuestionsListViewMvc.Listener, FetchLastActiveQuestionsUseCase.Listener {
 
     private static final int CACHE_TIMEOUT_MS = 10000;
 
@@ -24,7 +24,7 @@ public class QuestionsListController  implements
     private long mLastCachedTimestamp;
 
     public QuestionsListController(FetchLastActiveQuestionsUseCase fetchLastActiveQuestionsUseCase,
-                                   ScreensNavigator screensNavigator,
+                                   ScreensNavigator screensNavigator, // Абстракция для навигации между екранами
                                    ToastsHelper toastsHelper,
                                    TimeProvider timeProvider) {
         mFetchLastActiveQuestionsUseCase = fetchLastActiveQuestionsUseCase;

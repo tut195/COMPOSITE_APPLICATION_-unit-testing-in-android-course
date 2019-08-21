@@ -87,6 +87,8 @@ public class FetchLastActiveQuestionsUseCaseTest {
     // endregion helper methods --------------------------------------------------------------------
 
     // region helper classes -----------------------------------------------------------------------
+
+    // Создаём тестовый вспомогательный класс для тестирования Endpoint
     private static class EndpointTd extends FetchLastActiveQuestionsEndpoint {
 
         public boolean mFailure;

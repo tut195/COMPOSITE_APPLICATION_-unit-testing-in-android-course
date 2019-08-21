@@ -1,10 +1,19 @@
 package com.techyourchance.testdrivendevelopment.example11;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import com.techyourchance.testdrivendevelopment.example11.cart.CartItem;
 import com.techyourchance.testdrivendevelopment.example11.networking.CartItemSchema;
 import com.techyourchance.testdrivendevelopment.example11.networking.GetCartItemsHttpEndpoint;
 import com.techyourchance.testdrivendevelopment.example11.networking.GetCartItemsHttpEndpoint.Callback;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,22 +23,6 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FetchCartItemsUseCaseTest {
@@ -64,6 +57,8 @@ public class FetchCartItemsUseCaseTest {
         return schemas;
     }
 
+    // Correct card limit passed to endpoint
+
     @Test
     public void fetchCartItems_correctLimitPassedToEndpoint() throws Exception {
         // Arrange
@@ -82,12 +77,16 @@ public class FetchCartItemsUseCaseTest {
         SUT.registerListener(mListenerMock1);
         SUT.registerListener(mListenerMock2);
         SUT.fetchCartItemsAndNotify(LIMIT);
-        // Assert
-        verify(mListenerMock1).onCartItemsFetched(mAcListCartItem.capture());
+        // Assert что оба слушателя будут вызваны
+        verify(mListenerMock1).onCartItemsFetched(mAcListCartItem.capture());// передаём argument captures
         verify(mListenerMock2).onCartItemsFetched(mAcListCartItem.capture());
+
+        // Получаем значени
         List<List<CartItem>> captures = mAcListCartItem.getAllValues();
+
         List<CartItem> capture1 = captures.get(0);
         List<CartItem> capture2 = captures.get(1);
+        //Проверяем утверждения!!!
         assertThat(capture1, is(getCartItems()));
         assertThat(capture2, is(getCartItems()));
     }
@@ -139,13 +138,23 @@ public class FetchCartItemsUseCaseTest {
         return cartItems;
     }
 
+    /**
+     * В данном методе вызывается метод doAnswer - позводяет перехватить ответ??
+     * Принимает на вход new Answer(), у которого есть метод answer, который имеет
+     * на входе параметра invokation - соответвенно через него можни получить и воздействовать на
+     * "содержит информацию от вызоме mock"
+     */
+
+
     private void success() {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] args = invocation.getArguments();
+
+                // Вот эти аргументы и есть то, что мы вызываем в ниже вызванном методе!
                 Callback callback = (Callback) args[1];
-                callback.onGetCartItemsSucceeded(getCartItemSchemes());
+                callback.onGetCartItemsSucceeded(getCartItemSchemes()); // созданный замоканый ответ!
                 return null;
             }
         }).when(mGetCartItemsHttpEndpointMock).getCartItems(anyInt(), any(Callback.class));

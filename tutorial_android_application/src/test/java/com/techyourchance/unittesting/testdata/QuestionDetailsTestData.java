@@ -2,6 +2,10 @@ package com.techyourchance.unittesting.testdata;
 
 import com.techyourchance.unittesting.questions.QuestionDetails;
 
+/**
+ * Это общий класс для всех методов, которые будут учавствовать в тестировании!!!
+ *
+ */
 public class QuestionDetailsTestData {
 
     public static QuestionDetails getQuestionDetails1() {
